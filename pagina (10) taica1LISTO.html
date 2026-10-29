@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamiento de Citas - Red de Ambulatorios Guaicaipuro</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --primary-gradient: linear-gradient(135deg, #0284c7, #0369a1);
+            --primary: #0284c7;
+            --accent-green: #16a34a;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --border-radius: 20px;
+        }
+
+         .header-ambulatorio {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #ffffff;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .logo-institucional {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .titulos-container {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .titulos-container h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .titulos-container p {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(100deg, #40E0D0, #40E0D0);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alineado arriba para que empiece a verse de una vez en móviles */
+            padding: 15px 12px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 25px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            max-width: 520px;
+            width: 100%;
+            margin-top: 5px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(16px);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-brand {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .header-icon {
+            font-size: 42px;
+            margin-bottom: 4px;
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 12.5px;
+            font-weight: 600;
+        }
+
+        .badge-status {
+            background: linear-gradient(100deg, #51ff0ce8, #fcfafa);
+            box-shadow: 0 8px 20px rgba(44, 224, 59, 0.671);
+            color: #000000;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        label {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #334155;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            background: #f8fafc;
+            color: var(--text-dark);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #16a34a;
+            background: #ffffff;
+            box-shadow: 0 8px 20px rgba(22, 245, 14, 0.671);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            background: #f8fafc;
+            padding: 11px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            width: 17px;
+            height: 17px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background: linear-gradient(100deg, #51ff0ce8, #fcfafa);
+            box-shadow: 0 8px 20px rgba(44, 224, 59, 0.671);
+            width: 100%;
+            padding: 15px;
+            color: rgb(0, 0, 0);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .confirmation-card {
+            display: none;
+            text-align: center;
+            padding: 10px 5px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .confirmation-card .check-icon {
+            font-size: 55px;
+            margin-bottom: 10px;
+            color: var(--accent-green);
+        }
+
+        .confirmation-card h3 {
+            font-size: 21px;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            font-weight: 800;
+        }
+
+        .confirmation-details {
+            background: #f0fdf4;
+            border: 2px solid #00ff59;
+            box-shadow: 0 8px 20px rgba(7, 255, 19, 0.993);
+            border-radius: 14px;
+            padding: 18px;
+            margin: 16px 0;
+            text-align: left;
+            font-size: 13.5px;
+            color: #166534;
+            line-height: 1.6;
+        }
+
+        .btn-reset {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-reset:hover {
+            background: #334155;
+        }
+
+        .slogan-footer {
+            text-align: center;
+            margin-top: 22px;
+            font-style: italic;
+            font-size: 12px;
+            color: #060706;
+            font-weight: 800;
+            padding-top: 14px;
+            border-top: 2px dashed #bbf7d0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+   <div class="header-brand" style="display: flex; justify-content: space-between; align-items: center;">
+    <img src="logo_ambulatorio/logo1.png" alt="Logo Izquierdo" style="height: 60px; object-fit: contain;">
+    
+    <div style="text-align: center; flex-grow: 1; padding: 0 15px;">
+        <h2 id="tituloAdmin" title="hacer clic para ingresar clave de administrador" style="margin: 0; font-size: 1.25rem;">PASTORA PALACIO</h2>
+        <p class="subtitle" style="margin: 0;">Municipio Guaicaipuro</p>
+    </div>
+
+
+    <img src="logo_ambulatorio/logo2.png" alt="Logo Derecho" style="height: 60px; object-fit: contain;">
+</div>
+    <div class="badge-status" id="badgeStatus">
+        🟢 Solicitud de Citas Médicas Habilitada
+    </div>
+
+    <form id="citaForm" class="form-grid" onsubmit="enviarCita(event)">
+        <div class="form-group">
+            <label for="nombres">Nombre y Apellido:</label>
+            <input type="text" id="nombres" required placeholder="Ingrese su Primer nombre y apellido">
+        </div>
+
+        <div class="form-group">
+            <label for="cedula">Cédula de Identidad:</label>
+            <input type="text" id="cedula" required placeholder="Ej. 18234567" 
+                   inputmode="numeric" 
+                   pattern="[0-9]{6,9}" 
+                   maxlength="9"
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+
+        <div class="form-group">
+            <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+            <input type="date" id="fechaNacimiento" required>
+        </div>
+
+        <div class="form-group">
+            <label for="edad">Edad:</label>
+            <input type="text" id="edad" required placeholder="Ingrese su Edad"
+                   inputmode="numeric" 
+                   pattern="[0-9]{1,3}" 
+                   maxlength="3"
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+
+        <div class="form-group">
+            <label>Sexo:</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="sexo" value="F" required> Femenino
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="sexo" value="M" required> Masculino
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="parroquia">Parroquia:</label>
+            <input type="text" id="parroquia" required placeholder="...">
+        </div>
+
+        <div class="form-group">
+            <label for="ubicacion">Ubicación / Sector / Comunidad:</label>
+            <input type="text" id="ubicacion" required placeholder="...">
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Teléfono de Contacto:</label>
+            <div style="display: flex; gap: 8px;">
+                <select id="prefijoTelefono" required style="width: 40%; font-weight: 700;">
+                    <option value="" disabled selected>Código</option>
+                    <option value="0412">0412 (Digitel)</option>
+                    <option value="0422">0422 (Digitel)</option>
+                    <option value="0414">0414 (Movistar)</option>
+                    <option value="0424">0424 (Movistar)</option>
+                    <option value="0416">0416 (Movilnet)</option>
+                    <option value="0426">0426 (Movilnet)</option>
+                </select>
+
+                <input type="text" id="numeroTelefono" required placeholder="Ej. 1234567" 
+                       inputmode="numeric" 
+                       pattern="[0-9]{7}" 
+                       maxlength="7" 
+                       style="width: 60%;"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="tipoCita">Tipo de Cita:</label>
+            <select id="tipoCita" required>
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="Por Primera Vez">Por Primera Vez</option>
+                <option value="Sucesivo">Sucesivo (Control / Ya he agendado antes)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="especialidad">Especialidad Requerida:</label>
+            <select id="especialidad" required>
+                <option value="" disabled selected>Seleccione la especialidad</option>
+                <option value="Medicina Interna">Medicina Interna</option>
+                <option value="Pediatría">Pediatría</option>
+                <option value="Ginecología">Ginecología</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnEnviar">Solicitar Agendamiento de Cita</button>
+    </form>
+
+    <div class="confirmation-card" id="confirmationCard">
+        <div class="check-icon">✅</div>
+        <h3>¡Registro Solicitado con Éxito!</h3>
+        <p style="color: #475569; font-size: 13.5px;">Sus datos se han enviado automáticamente al sistema.</p>
+
+        <div class="confirmation-details" id="confirmationDetails"></div>
+
+        <a id="btnWhatsApp" href="#" target="_blank" style="display: block; width: 100%; background: #25d366; color: white; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 800; margin-bottom: 12px; text-align: center; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);">
+            💬 Notificar a la Oficina por WhatsApp
+        </a>
+    </div>
+
+    <div class="slogan-footer">
+        "Para Farith Fraija su Salud es primordial."
+    </div>
+</div>
+
+<script>
+    const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbwDLieop63eg2wVgrhiuHZLD0MGRb4ne_FO9Y7Y7vloctBZkt22GO28wXrHGzZNl3v9jQ/exec";
+
+    // Bloqueo automático activo al cargar la página si ya se registró
+    document.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('registro_bloqueado') === 'true') {
+            document.getElementById('citaForm').style.display = "none";
+            document.getElementById('badgeStatus').style.background = "linear-gradient(135deg, #fee2e2, #fecaca)";
+            document.getElementById('badgeStatus').style.color = "#991b1b";
+            document.getElementById('badgeStatus').style.borderColor = "#fca5a5";
+            document.getElementById('badgeStatus').innerHTML = "🔒 Dispositivo Bloqueado. Se requiere permiso de la agencia para otro registro.";
+        }
+
+        // Sistema de clave secreta (1234) al hacer clic en el título del ambulatorio
+        const titulo = document.getElementById('tituloAdmin');
+        if (titulo) {
+            titulo.addEventListener('click', () => {
+                const clave = prompt("🔐 Ingrese la clave de la agencia para desbloquear el dispositivo:");
+                if (clave === "5678") {
+                    localStorage.removeItem('registro_bloqueado');
+                    alert("✅ ¡Desbloqueado con éxito! La página se recargará.");
+                    location.reload();
+                } else if (clave !== null) {
+                    alert("❌ Clave incorrecta.");
+                }
+            });
+        }
+    });
+
+    function enviarCita(event) {
+        event.preventDefault();
+
+        if (localStorage.getItem('registro_bloqueado') === 'true') {
+            alert("⚠️ Este dispositivo ya registró una cita. Debe solicitar el desbloqueo en la agencia.");
+            return;
+        }
+
+        const prefijo = document.getElementById('prefijoTelefono').value;
+        const digitosTel = document.getElementById('numeroTelefono').value.trim();
+        const cedulaVal = document.getElementById('cedula').value.trim();
+
+        if (!prefijo) {
+            alert("⚠️ Por favor seleccione el código de área de su operadora.");
+            return;
+        }
+
+        if (digitosTel.length !== 7) {
+            alert("⚠️ Por favor ingrese los 7 dígitos restantes de su número de teléfono.");
+            return;
+        }
+
+        if (cedulaVal.length < 6) {
+            alert("⚠️ Por favor ingrese un número de cédula válido.");
+            return;
+        }
+
+        const telefonoCompleto = prefijo + digitosTel;
+        const btn = document.getElementById('btnEnviar');
+        btn.innerText = "Procesando registro...";
+        btn.disabled = true;
+
+        const datosPaciente = {
+            nombres: document.getElementById('nombres').value.trim(),
+            cedula: cedulaVal,
+            fechaNacimiento: document.getElementById('fechaNacimiento').value,
+            edad: document.getElementById('edad').value.trim(),
+            sexo: document.querySelector('input[name="sexo"]:checked').value,
+            parroquia: document.getElementById('parroquia').value.trim(),
+            ubicacion: document.getElementById('ubicacion').value.trim(),
+            telefono: telefonoCompleto,
+            tipoCita: document.getElementById('tipoCita').value,
+            especialidad: document.getElementById('especialidad').value
+        };
+
+        fetch(URL_GOOGLE_SHEETS, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datosPaciente)
+        }).then(() => {
+            // Guardar bloqueo permanente en el dispositivo hasta que la agencia meta la clave 1234
+            localStorage.setItem('registro_bloqueado', 'true');
+
+            const fechaHoy = new Date().toLocaleDateString('es-VE');
+            const horaHoy = new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' });
+
+            const textoMensaje = `Hola, buenos días. Acabo de registrar mis datos para una cita médica:
+
+👤 Nombre: ${datosPaciente.nombres}
+🆔 Cédula: ${datosPaciente.cedula}
+📞 Teléfono: ${datosPaciente.telefono}
+📍 Zona: ${datosPaciente.parroquia} - ${datosPaciente.ubicacion}
+🩺 Especialidad: ${datosPaciente.especialidad}
+📋 Tipo: ${datosPaciente.tipoCita}`;
+
+            const numeroOficina = "584142836815";
+            const urlWhatsApp = "https://wa.me/" + numeroOficina + "?text=" + encodeURIComponent(textoMensaje);
+            document.getElementById('btnWhatsApp').href = urlWhatsApp;
+
+            document.getElementById('citaForm').style.display = "none";
+            document.getElementById('badgeStatus').style.background = "linear-gradient(135deg, #fee2e2, #fecaca)";
+            document.getElementById('badgeStatus').style.color = "#991b1b";
+            document.getElementById('badgeStatus').style.borderColor = "#fca5a5";
+            document.getElementById('badgeStatus').innerHTML = "🔒 Dispositivo Bloqueado. Se requiere permiso de la agencia para otro registro.";
+
+            document.getElementById('confirmationDetails').innerHTML = `
+                <strong>Paciente:</strong> ${datosPaciente.nombres}<br>
+                <strong>Cédula:</strong> ${datosPaciente.cedula}<br>
+                <strong>Teléfono:</strong> ${datosPaciente.telefono}<br>
+                <strong>Especialidad:</strong> ${datosPaciente.especialidad}<br>
+                <strong>Fecha:</strong> ${fechaHoy} (${horaHoy})<br><br>
+                📌 <em>¡Listo! Presione el botón verde de abajo para enviar el resumen a la oficina por WhatsApp.</em>
+            `;
+            document.getElementById('confirmationCard').style.display = "block";
+        }).catch(() => {
+            alert("Error al enviar la solicitud. Por favor intente de nuevo.");
+            btn.innerText = "Solicitar Agendamiento de Cita";
+            btn.disabled = false;
+        });
+    }
+</script>
+
+</body>
+</html>
